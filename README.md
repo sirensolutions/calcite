@@ -24,3 +24,39 @@ limitations under the License.
 Apache Calcite is a dynamic data management framework.
 
 For more details, see the [home page](http://calcite.apache.org).
+
+# Siren Deployment 
+## For Development
+When developing and testing new features, one can use Maven SNAPSHOT feature to deploy over and over on artifactory.
+To set this up, change the version in all pom.xml to append `-SNAPSHOT`.
+
+For instance in the pom.xml it should look like this:
+```xml
+...
+  <!-- The basics. -->
+  <groupId>org.apache.calcite</groupId>
+  <artifactId>calcite</artifactId>
+  <packaging>pom</packaging>
+  <version>siren-1.19.0-SNAPSHOT</version>
+...
+```
+
+Once all the POM files are set, one can run these 2 commands to install and then to deploy to Siren Artifactory repository `libs-snapshot-local`.
+```bash
+mvn -P artifactory -DskipTests \
+  -Dartifactory_username=$ARTIFACTORY_USERNAME \
+  -Dartifactory_password=$ARTIFACTORY_API_KEY \
+  clean install
+
+mvn -P artifactory -DskipTests \
+  -Dartifactory_username=$ARTIFACTORY_USERNAME \
+  -Dartifactory_password=$ARTIFACTORY_API_KEY \
+  deploy
+```
+
+`-Dcheckstyle.skip` allows one to install without checking style failing.
+
+## For Production Release
+Change all the version in POM files to the release version and use the same command. 
+Maven will figure out from the name convention that it deploys the release to a different Artifactory repository
+as defined in the main pom.xml file section called `distributionManagement`.

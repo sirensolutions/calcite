@@ -18,7 +18,6 @@ package org.apache.calcite.config;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.AccessControlException;
@@ -138,21 +137,7 @@ public final class CalciteSystemProperty<T> {
    * The first valid path that exists in the filesystem will be chosen.
    */
   public static final CalciteSystemProperty<String> TEST_DATASET_PATH =
-      new CalciteSystemProperty<>("calcite.test.dataset", v -> {
-        if (v != null) {
-          return v;
-        }
-        final String[] dirs = {
-            "../calcite-test-dataset",
-            "../../calcite-test-dataset"
-        };
-        for (String s : dirs) {
-          if (new File(s).exists() && new File(s, "vm").exists()) {
-            return s;
-          }
-        }
-        return ".";
-      });
+    stringProperty("calcite.test.dataset", "");
 
   /**
    * Whether to run slow tests.

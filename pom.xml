@@ -27,7 +27,7 @@ limitations under the License.
   <groupId>org.apache.calcite</groupId>
   <artifactId>calcite</artifactId>
   <packaging>pom</packaging>
-  <version>1.19.0</version>
+  <version>1.19.0-siren-SNAPSHOT</version>
 
   <!-- More project information. -->
   <name>Calcite</name>
@@ -1106,6 +1106,26 @@ limitations under the License.
   </repositories>
 
   <profiles>
+
+    <!-- To deploy to artifactory -->
+    <profile>
+      <id>artifactory</id>
+
+      <distributionManagement>
+        <repository>
+          <id>artifactory-releases</id>
+          <name>artifactory-releases</name>
+          <url>${artifactory.url}/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+          <id>artifactory-snapshots</id>
+          <name>artifactory-snapshots</name>
+          <url>${artifactory.url}/libs-snapshot-local</url>
+        </snapshotRepository>
+      </distributionManagement>
+
+    </profile>
+
     <profile>
       <!-- This profile adds/overrides few features of the 'apache-release'
            profile in the parent pom. -->
