@@ -18,15 +18,13 @@ package org.apache.calcite.config;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.AccessControlException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
-import java.util.stream.Stream;
 
 /**
  * A Calcite specific system property that is used to configure various aspects of the framework.
@@ -137,19 +135,19 @@ public final class CalciteSystemProperty<T> {
    * The first valid path that exists in the filesystem will be chosen.
    */
   public static final CalciteSystemProperty<String> TEST_DATASET_PATH =
-    stringProperty("calcite.test.dataset", "");
+        stringProperty("calcite.test.dataset", "");
 
   /**
    * Whether to run slow tests.
    */
   public static final CalciteSystemProperty<Boolean> TEST_SLOW =
-      booleanProperty("calcite.test.slow", false);
+        booleanProperty("calcite.test.slow", false);
 
   /**
    * Whether to run MongoDB tests.
    */
   public static final CalciteSystemProperty<Boolean> TEST_MONGODB =
-      booleanProperty("calcite.test.mongodb", true);
+        booleanProperty("calcite.test.mongodb", true);
 
   /**
    * Whether to run Splunk tests.
@@ -158,19 +156,19 @@ public final class CalciteSystemProperty<T> {
    * and populated with the data set necessary for testing.
    */
   public static final CalciteSystemProperty<Boolean> TEST_SPLUNK =
-      booleanProperty("calcite.test.splunk", false);
+        booleanProperty("calcite.test.splunk", false);
 
   /**
    * Whether to run Druid tests.
    */
   public static final CalciteSystemProperty<Boolean> TEST_DRUID =
-      booleanProperty("calcite.test.druid", true);
+        booleanProperty("calcite.test.druid", true);
 
   /**
    * Whether to run Cassandra tests.
    */
   public static final CalciteSystemProperty<Boolean> TEST_CASSANDRA =
-      booleanProperty("calcite.test.cassandra", true);
+        booleanProperty("calcite.test.cassandra", true);
 
   /**
    * A list of ids designating the queries
@@ -332,35 +330,24 @@ public final class CalciteSystemProperty<T> {
     });
   }
 
+  // SIREN: removed support for replacement of legacy saffron properties file
   private static Properties loadProperties() {
-    Properties saffronProperties = new Properties();
-    // Read properties from the file "saffron.properties", if it exists in classpath
-    try (InputStream stream = CalciteSystemProperty.class.getClassLoader()
-        .getResourceAsStream("saffron.properties")) {
-      if (stream != null) {
-        saffronProperties.load(stream);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("while reading from saffron.properties file", e);
-    } catch (AccessControlException e) {
-      // we're in a sandbox
-    }
 
-    Properties allProperties = new Properties();
-    // Merge system and saffron properties mapping deprecated saffron namespaces to calcite
-    Stream.concat(
-        saffronProperties.entrySet().stream(),
-        System.getProperties().entrySet().stream()).
-        forEach(prop -> {
-            String deprecatedKey = (String) prop.getKey();
-            String newKey = deprecatedKey
+    return AccessController.doPrivileged((PrivilegedAction<Properties>) () -> {
+      Properties allProperties = new Properties();
+      // Merge system and saffron properties mapping deprecated saffron namespaces to calcite
+      System.getProperties().entrySet().stream().forEach(prop -> {
+        String deprecatedKey = (String) prop.getKey();
+        String newKey = deprecatedKey
                 .replace("net.sf.saffron.", "calcite.")
                 .replace("saffron.", "calcite.");
-            if (newKey.startsWith("calcite.")) {
-              allProperties.setProperty(newKey, (String) prop.getValue());
-            }
-          });
-    return allProperties;
+        if (newKey.startsWith("calcite.")) {
+          allProperties.setProperty(newKey, (String) prop.getValue());
+        }
+      });
+      return allProperties;
+    });
+
   }
 
   private final T value;
