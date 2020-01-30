@@ -37,7 +37,7 @@ For instance in the pom.xml it should look like this:
   <groupId>org.apache.calcite</groupId>
   <artifactId>calcite</artifactId>
   <packaging>pom</packaging>
-  <version>1.19.0-siren-0.1.0-SNAPSHOT</version>
+  <version>1.19.0-siren-0.1.0</version>
 ...
 ```
 
