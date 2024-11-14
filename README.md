@@ -43,15 +43,9 @@ For instance in the pom.xml it should look like this:
 
 Once all the POM files are set, one can run these 2 commands to install and then to deploy to Siren Artifactory repository `libs-snapshot-local`.
 ```bash
-mvn -P artifactory -DskipTests \
-  -Dartifactory_username=$ARTIFACTORY_USERNAME \
-  -Dartifactory_password=$ARTIFACTORY_API_KEY \
-  clean install
+mvn -P google-artifact-registry -DskipTests clean install
 
-mvn -P artifactory -DskipTests \
-  -Dartifactory_username=$ARTIFACTORY_USERNAME \
-  -Dartifactory_password=$ARTIFACTORY_API_KEY \
-  deploy
+mvn -P google-artifact-registry -DskipTests deploy
 ```
 
 `-Dcheckstyle.skip` allows one to install without checking style failing.
