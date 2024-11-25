@@ -46,6 +46,7 @@ limitations under the License.
   </mailingLists>
 
   <properties>
+    <gar.url>artifactregistry://europe-west1-maven.pkg.dev/siren-cicd</gar.url>
     <!-- Ensure that source and target version are overridden from base ASF POM.
          This is also used by forbiddenapis to ensure correct signatures are loaded. -->
     <maven.compiler.source>8</maven.compiler.source>
@@ -1116,17 +1117,17 @@ limitations under the License.
 
     <!-- To deploy to GAR -->
     <profile>
-      <id>google-artifact-registry</id>
+      <id>gar</id>
 
     <distributionManagement>
         <repository>
           <id>google-artifact-registry</id>
           <name>gar-releases</name>
-          <url>artifactregistry://europe-west1-maven.pkg.dev/siren-cicd/maven-local-siren-release</url>
+          <url>${gar.url}/maven-local-siren-release</url>
         </repository>
         <snapshotRepository>
           <id>artifact-registry</id>
-          <url>artifactregistry://europe-west1-maven.pkg.dev/siren-cicd/maven-local-siren-snapshot</url>
+          <url>${gar.url}/maven-local-siren-snapshot</url>
         </snapshotRepository>
       </distributionManagement>
 

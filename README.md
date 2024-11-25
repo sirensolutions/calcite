@@ -28,7 +28,7 @@ For more details, see the [home page](http://calcite.apache.org).
 # Siren Deployment 
 ## For Development
 When developing and testing new features, one can use Maven SNAPSHOT feature to deploy over and over on artifactory.
-To set this up, change the version in all pom.xml to append `-SNAPSHOT`.
+To set this up, change the version in all pom.xmlgcloud auth login to append `-SNAPSHOT`.
 
 For instance in the pom.xml it should look like this:
 ```xml
@@ -43,12 +43,17 @@ For instance in the pom.xml it should look like this:
 
 Once all the POM files are set, one can run these 2 commands to install and then to deploy to Siren Artifactory repository `libs-snapshot-local`.
 ```bash
-mvn -P google-artifact-registry -DskipTests clean install
+mvn -P gar -DskipTests clean install
 
-mvn -P google-artifact-registry -DskipTests deploy
+mvn -P gar -DskipTests deploy
 ```
 
 `-Dcheckstyle.skip` allows one to install without checking style failing.
+
+Note: in order to deploy, we must be logged into google artifact registry
+```bash
+gcloud auth login
+```
 
 ## For Production Release
 Change all the version in POM files to the release version and use the same command. 
